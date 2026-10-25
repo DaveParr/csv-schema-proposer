@@ -30,6 +30,17 @@ jac run main.jac data.csv [-o out.py] [--rows 200] [--model ollama/<model>]
 
 The default model is `ollama/qwen2.5:1.5b`. To use another model, set `LLM_MODEL` or pass `--model`, e.g. `--model ollama/qwen2.5:3b` if you have the RAM.
 
+## Web UI
+
+```
+jac run web        # then open http://localhost:8000
+```
+
+Upload a CSV (or click "Use sample data") to see the model's parsed rules, its raw
+reply, the adjustments the pipeline made, and the final pandera schema (copy or
+download it). `web/api.jac` exposes `propose_csv` and `sample_csv` as endpoints;
+both the CLI and the web app call `pipeline.run_pipeline`.
+
 ## Tests
 
 `jac test` runs the whole pipeline against a `MockLLM`, so Ollama isn't needed.

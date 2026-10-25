@@ -7,9 +7,9 @@ import argparse;
 import sys;
 import from pathlib { Path }
 import from jaclang.byllm.lib { Model }
-import from propose { CsvSample, ColumnRule, DEFAULT_MODEL, set_model }
-import from profiling { load_csv, profile_df }
-import from render { reconcile, fit_to_sample }
+import from propose { ColumnRule, DEFAULT_MODEL, set_model }
+import from profiling { load_csv }
+import from pipeline { run_pipeline }
 
 def build_parser -> argparse.ArgumentParser {
     parser = argparse.ArgumentParser(
@@ -63,41 +63,32 @@ def main(argv: list[str] | None = None) -> int {
         set_model(Model(model_name=args.model));
     }
 
-    table = profile_df(load_csv(str(csv_path), args.rows));
-    print(f"Profiled {len(table.df)} rows x {len(table.columns)} columns:");
-    print(table.to_prompt());
-
-    print("\nAsking the model for a schema...");
-    sample = CsvSample(
-        column_profile=table.to_prompt(), sample_rows=table.sample_rows()
-    );
-    try {
-        proposal = sample.propose_schema();
-    } except Exception as err {
-        # Connection errors come from litellm, so catch broadly and explain.
-        print(f"error: model call failed: {err}", file=sys.stderr);
-        print(
-            "Is Ollama running with the model pulled?  Try: ollama pull qwen2.5:1.5b",
-            file=sys.stderr,
-        );
+    df = load_csv(str(csv_path), args.rows);
+    print(f"Profiling {len(df)} rows x {len(df.columns)} columns and asking the model...");
+    result = run_pipeline(df, csv_path.name);
+    print(result.profile);
+    if result.error {
+        print(f"\nerror: {result.error}", file=sys.stderr);
+        if result.error.startswith("Model call failed") {
+            print(
+                "Is Ollama running with the model pulled?  Try: ollama pull qwen2.5:1.5b",
+                file=sys.stderr,
+            );
+        }
         return 1;
     }
 
-    notes: list[str] = [];
-    rules = reconcile(proposal, table, notes);
-    code = fit_to_sample(rules, table, csv_path.name, notes);
-
-    print("\nProposed rules:");
-    for rule in rules {
+    print(f"\nProposed rules ({result.model_name}, {result.elapsed_s}s):");
+    for rule in result.final_rules {
         print(describe(rule));
     }
-    if notes {
+    if result.notes {
         print("\nAdjusted so the sample passes:");
-        for note in notes {
+        for note in result.notes {
             print(f"  - {note}");
         }
     }
-    _ = out_path.write_text(code);
+    _ = out_path.write_text(result.schema_code);
     print(f"\nWrote {out_path}  (validate a file: python {out_path} data.csv)");
     return 0;
 }

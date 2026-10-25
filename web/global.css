@@ -1,0 +1,253 @@
+body {
+  margin: 0;
+  background: #f6f7f9;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #15171c;
+  }
+}
+
+/* Page styles. (A frontend.style.css annex is the idiomatic home, but in jac
+   0.38.2's dev server its compiled CSS never appears, so they live here.) */
+
+.page {
+  --bg: #f6f7f9;
+  --card: #ffffff;
+  --text: #1c1f26;
+  --muted: #5d6573;
+  --border: #dfe3ea;
+  --accent: #2f6fdb;
+  --accent-text: #ffffff;
+  --code-bg: #f1f3f7;
+  --error-bg: #fdecec;
+  --error-text: #a32020;
+  --pill-bg: #e7eefc;
+
+  min-height: 100vh;
+  box-sizing: border-box;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  line-height: 1.45;
+}
+
+@media (prefers-color-scheme: dark) {
+  .page {
+    --bg: #15171c;
+    --card: #1d2027;
+    --text: #e6e8ec;
+    --muted: #9aa3b2;
+    --border: #2f3440;
+    --accent: #5b8ff0;
+    --code-bg: #12141a;
+    --error-bg: #3a1d1f;
+    --error-text: #ffb4b4;
+    --pill-bg: #26324a;
+  }
+}
+
+.header h1 {
+  margin: 0 0 0.25rem;
+  font-size: 1.8rem;
+}
+
+.muted {
+  color: var(--muted);
+  margin: 0.25rem 0 0.75rem;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+}
+
+.card h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.card h3 {
+  font-size: 0.95rem;
+  margin: 1rem 0 0.25rem;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.upload {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 1.1rem;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.upload input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+button {
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.secondary {
+  background: transparent;
+  color: var(--accent);
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+}
+
+.busy {
+  background: var(--card);
+  border: 1px solid var(--border);
+}
+
+.error {
+  background: var(--error-bg);
+  color: var(--error-text);
+  white-space: pre-wrap;
+}
+
+.spinner {
+  width: 1rem;
+  height: 1rem;
+  flex: none;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 2rem;
+}
+
+.label {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.section-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.rules {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.rules th,
+.rules td {
+  text-align: left;
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.rules th {
+  color: var(--muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.mono,
+.code {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+.pill {
+  display: inline-block;
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  background: var(--pill-bg);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.code {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  overflow-x: auto;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  margin: 0.75rem 0 0;
+}
+
+.notes {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+details summary {
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 0.75rem;
+}

@@ -2,9 +2,8 @@
 name = "csv-schema-proposer"
 version = "0.1.0"
 description = "Propose a pandera schema for a CSV using a tiny local model"
-entry-point = "main"
-kind = "cli"
 jac-version = "==0.38.2"
+default-app = "csv-schema-proposer"
 
 [dependencies]
 
@@ -26,3 +25,17 @@ temperature = 0.1
 
 [test]
 directory = "tests"
+
+[apps.csv-schema-proposer]
+kind = "cli"
+entry-point = "main"
+
+[apps.web]
+kind = "web-app"
+entry-point = "web.main"
+
+[apps.web.dependencies.npm]
+jac-client-node = "1.0.7"
+
+[apps.web.dependencies.npm.dev]
+"@jac-client/dev-deps" = "1.0.0"
