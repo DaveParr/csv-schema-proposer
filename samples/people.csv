@@ -1,0 +1,11 @@
+id,name,email,age,height_m,signup_date,plan,is_active
+1,Ada Lovelace,ada@example.com,36,1.65,2024-01-15,pro,true
+2,Alan Turing,alan@example.com,41,1.78,2024-02-03,free,true
+3,Grace Hopper,grace@example.com,85,1.60,2024-02-20,enterprise,false
+4,Linus Torvalds,linus@example.com,54,1.77,2024-03-11,free,true
+5,Margaret Hamilton,margaret@example.com,,1.63,2024-03-29,pro,true
+6,Dennis Ritchie,dennis@example.com,70,1.80,2024-04-02,free,false
+7,Barbara Liskov,barbara@example.com,84,,2024-04-18,enterprise,true
+8,Ken Thompson,ken@example.com,81,1.75,2024-05-07,pro,true
+9,Katherine Johnson,katherine@example.com,101,1.62,2024-05-30,free,false
+10,Guido van Rossum,guido@example.com,68,1.85,2024-06-14,pro,true
