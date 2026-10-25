@@ -76,3 +76,7 @@ sem CsvSample.propose_schema = "Propose a validation rule for every column so th
 def set_model(model: Model | MockLLM) {
     llm = model;
 }
+
+def current_model_name -> str {
+    return str(llm.model_name);
+}

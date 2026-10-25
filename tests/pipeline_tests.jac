@@ -140,3 +140,27 @@ test "measured types override the model's mislabels" {
     assert "signup_date: model said BOOL, data is DATETIME" in joined, joined;
     assert "'signup_date': pa.Column('datetime64[ns]'" in code;
 }
+
+test "run_pipeline returns every stage, model rules untouched" {
+    import from pipeline { run_pipeline }
+    rules = good_rules();
+    rules[3].max_value = 50.0;    # will be relaxed in final_rules only
+    set_model(MockLLM(outputs=[SchemaProposal(columns=rules)]));
+    result = run_pipeline(pd.read_csv(SAMPLE), "people.csv");
+    assert result.error == "", result.error;
+    assert result.model_name == "mockllm";
+    assert '"max_value"' in result.model_reply, result.model_reply;
+    assert result.model_rules[3].max_value == 50.0, "model_rules must stay as the model said";
+    assert result.final_rules[3].max_value is None;
+    assert "age: sample breaks max 50" in "\n".join(result.notes);
+    _ = load_schema(result.schema_code).validate(pd.read_csv(SAMPLE), lazy=True);
+}
+
+test "run_pipeline reports model failures instead of raising" {
+    import from pipeline { run_pipeline }
+    import from jaclang.byllm.lib { MockError }
+    set_model(MockLLM(outputs=[MockError(error=ConnectionError("ollama down"))]));
+    result = run_pipeline(pd.read_csv(SAMPLE), "people.csv");
+    assert result.error.startswith("Model call failed"), result.error;
+    assert result.schema_code == "";
+}
