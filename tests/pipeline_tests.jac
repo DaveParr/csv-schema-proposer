@@ -164,3 +164,16 @@ test "run_pipeline reports model failures instead of raising" {
     assert result.error.startswith("Model call failed"), result.error;
     assert result.schema_code == "";
 }
+
+test "web endpoint parses CSV text and rejects junk" {
+    import from web.api { propose_csv }
+    set_model(MockLLM(outputs=[SchemaProposal(columns=good_rules())]));
+    ok = propose_csv(Path(SAMPLE).read_text(), "people.csv");
+    assert ok.error == "" and ok.schema_code, ok.error;
+    empty = propose_csv("just a header\n", "junk.csv");
+    assert "no data rows" in empty.error, empty.error;
+    bad = propose_csv('a,b\n"unterminated,1\n', "bad.csv");
+    assert bad.error != "", "malformed CSV should report an error";
+    huge = propose_csv("x" * 2_000_001, "huge.csv");
+    assert "over 2 MB" in huge.error, huge.error;
+}
